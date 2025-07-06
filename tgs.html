@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GIF to TGS Converter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            font-weight: 700;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 15px;
+            padding: 60px 20px;
+            text-align: center;
+            margin-bottom: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .upload-area:hover {
+            border-color: #764ba2;
+            background: rgba(118, 75, 162, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .upload-area.dragover {
+            border-color: #764ba2;
+            background: rgba(118, 75, 162, 0.15);
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+
+        .upload-text {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .preview-area {
+            display: none;
+            margin: 30px 0;
+        }
+
+        .preview-container {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .preview-item {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .preview-item h3 {
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        .preview-item img, .preview-item canvas {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .options {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .options h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .option-group {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .option-item {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .option-item label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .option-item input, .option-item select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+
+        .option-item input:focus, .option-item select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .progress-bar {
+            display: none;
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .status {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        .status.success {
+            background: rgba(76, 175, 80, 0.1);
+            color: #4caf50;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .status.error {
+            background: rgba(244, 67, 54, 0.1);
+            color: #f44336;
+            border: 1px solid rgba(244, 67, 54, 0.3);
+        }
+
+        .status.info {
+            background: rgba(33, 150, 243, 0.1);
+            color: #2196f3;
+            border: 1px solid rgba(33, 150, 243, 0.3);
+        }
+
+        .download-area {
+            display: none;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .download-btn {
+            background: linear-gradient(45deg, #4caf50, #45a049);
+            margin: 0 10px;
+        }
+
+        .download-btn:hover {
+            box-shadow: 0 10px 25px rgba(76, 175, 80, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .upload-area {
+                padding: 40px 15px;
+            }
+            
+            .preview-container {
+                flex-direction: column;
+            }
+            
+            .option-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 GIF to TGS Converter</h1>
+        
+        <div class="upload-area" id="uploadArea">
+            <div class="upload-icon">📁</div>
+            <div class="upload-text">
+                <strong>Click here or drag & drop your GIF files</strong>
+            </div>
+            <p style="color: #999; margin-top: 10px;">Supports GIF files up to 10MB</p>
+            <input type="file" id="fileInput" class="file-input" accept=".gif" multiple>
+        </div>
+
+        <div class="options">
+            <h3>⚙️ Conversion Options</h3>
+            <div class="option-group">
+                <div class="option-item">
+                    <label for="outputWidth">Width (px):</label>
+                    <input type="number" id="outputWidth" value="512" min="64" max="512">
+                </div>
+                <div class="option-item">
+                    <label for="outputHeight">Height (px):</label>
+                    <input type="number" id="outputHeight" value="512" min="64" max="512">
+                </div>
+                <div class="option-item">
+                    <label for="fps">Frame Rate:</label>
+                    <input type="number" id="fps" value="30" min="10" max="60">
+                </div>
+                <div class="option-item">
+                    <label for="duration">Max Duration (s):</label>
+                    <input type="number" id="duration" value="3" min="1" max="3" step="0.1">
+                </div>
+                <div class="option-item">
+                    <label for="quality">Quality (0.1-1.0):</label>
+                    <input type="number" id="quality" value="0.8" min="0.1" max="1.0" step="0.1">
+                </div>
+                <div class="option-item">
+                    <label for="optimize">Auto-optimize for TGS:</label>
+                    <select id="optimize">
+                        <option value="true">Yes (Recommended)</option>
+                        <option value="false">No</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="preview-area" id="previewArea">
+            <div class="preview-container" id="previewContainer">
+            </div>
+        </div>
+
+        <div class="progress-bar" id="progressBar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div class="status" id="status"></div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="btn" id="convertBtn" disabled>🔄 Convert to TGS</button>
+        </div>
+
+        <div class="download-area" id="downloadArea">
+            <h3>✅ Conversion Complete!</h3>
+            <div id="downloadLinks"></div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gifjs/0.2.0/gif.js"></script>
+    <script>
+        class GifToTgsConverter {
+            constructor() {
+                this.files = [];
+                this.initializeEventListeners();
+            }
+
+            initializeEventListeners() {
+                const uploadArea = document.getElementById('uploadArea');
+                const fileInput = document.getElementById('fileInput');
+                const convertBtn = document.getElementById('convertBtn');
+
+                // File upload events
+                uploadArea.addEventListener('click', () => fileInput.click());
+                uploadArea.addEventListener('dragover', this.handleDragOver.bind(this));
+                uploadArea.addEventListener('dragleave', this.handleDragLeave.bind(this));
+                uploadArea.addEventListener('drop', this.handleDrop.bind(this));
+                fileInput.addEventListener('change', this.handleFileSelect.bind(this));
+
+                // Convert button
+                convertBtn.addEventListener('click', this.convertFiles.bind(this));
+            }
+
+            handleDragOver(e) {
+                e.preventDefault();
+                document.getElementById('uploadArea').classList.add('dragover');
+            }
+
+            handleDragLeave(e) {
+                e.preventDefault();
+                document.getElementById('uploadArea').classList.remove('dragover');
+            }
+
+            handleDrop(e) {
+                e.preventDefault();
+                document.getElementById('uploadArea').classList.remove('dragover');
+                this.processFiles(e.dataTransfer.files);
+            }
+
+            handleFileSelect(e) {
+                this.processFiles(e.target.files);
+            }
+
+            processFiles(fileList) {
+                this.files = Array.from(fileList).filter(file => 
+                    file.type === 'image/gif' && file.size <= 10 * 1024 * 1024
+                );
+
+                if (this.files.length === 0) {
+                    this.showStatus('Please select valid GIF files (max 10MB each)', 'error');
+                    return;
+                }
+
+                this.showPreviews();
+                document.getElementById('convertBtn').disabled = false;
+                this.showStatus(`${this.files.length} GIF file(s) ready for conversion`, 'info');
+            }
+
+            showPreviews() {
+                const previewArea = document.getElementById('previewArea');
+                const previewContainer = document.getElementById('previewContainer');
+                
+                previewContainer.innerHTML = '';
+                
+                this.files.forEach((file, index) => {
+                    const previewItem = document.createElement('div');
+                    previewItem.className = 'preview-item';
+                    
+                    const img = document.createElement('img');
+                    img.src = URL.createObjectURL(file);
+                    img.alt = `GIF Preview ${index + 1}`;
+                    
+                    const title = document.createElement('h3');
+                    title.textContent = file.name;
+                    
+                    const info = document.createElement('p');
+                    info.textContent = `Size: ${(file.size / 1024).toFixed(1)}KB`;
+                    info.style.color = '#666';
+                    info.style.fontSize = '0.9em';
+                    info.style.marginTop = '10px';
+                    
+                    previewItem.appendChild(title);
+                    previewItem.appendChild(img);
+                    previewItem.appendChild(info);
+                    previewContainer.appendChild(previewItem);
+                });
+                
+                previewArea.style.display = 'block';
+            }
+
+            async convertFiles() {
+                const convertBtn = document.getElementById('convertBtn');
+                const progressBar = document.getElementById('progressBar');
+                const progressFill = document.getElementById('progressFill');
+                const downloadArea = document.getElementById('downloadArea');
+                const downloadLinks = document.getElementById('downloadLinks');
+
+                convertBtn.disabled = true;
+                progressBar.style.display = 'block';
+                downloadArea.style.display = 'none';
+                downloadLinks.innerHTML = '';
+
+                try {
+                    for (let i = 0; i < this.files.length; i++) {
+                        const file = this.files[i];
+                        const progress = ((i + 1) / this.files.length) * 100;
+                        
+                        progressFill.style.width = progress + '%';
+                        this.showStatus(`Converting ${file.name}...`, 'info');
+
+                        const tgsData = await this.convertGifToTgs(file);
+                        this.createDownloadLink(file.name, tgsData);
+                    }
+
+                    this.showStatus('All files converted successfully!', 'success');
+                    downloadArea.style.display = 'block';
+                    
+                } catch (error) {
+                    this.showStatus(`Conversion failed: ${error.message}`, 'error');
+                    console.error('Conversion error:', error);
+                } finally {
+                    convertBtn.disabled = false;
+                    setTimeout(() => {
+                        progressBar.style.display = 'none';
+                        progressFill.style.width = '0%';
+                    }, 1000);
+                }
+            }
+
+            async convertGifToTgs(file) {
+                return new Promise(async (resolve, reject) => {
+                    try {
+                        const width = parseInt(document.getElementById('outputWidth').value);
+                        const height = parseInt(document.getElementById('outputHeight').value);
+                        const fps = parseInt(document.getElementById('fps').value);
+                        const maxDuration = parseFloat(document.getElementById('duration').value);
+                        
+                        const quality = parseFloat(document.getElementById('quality').value);
+                        const autoOptimize = document.getElementById('optimize').value === 'true';
+                        
+                        // Extract frames from GIF
+                        const frames = await this.extractGifFrames(file);
+                        
+                        // Optimize frames for TGS requirements
+                        const optimizedFrames = await this.optimizeFrames(frames, width, height, fps, maxDuration, quality);
+                        
+                        // Create Lottie animation with optimized frames
+                        const lottieData = this.createLottieAnimation(optimizedFrames, width, height, fps, maxDuration, quality);
+                        
+                        // Convert to JSON and compress with gzip
+                        let jsonString = JSON.stringify(lottieData);
+                        let compressed = pako.gzip(jsonString);
+                        
+                        // Auto-optimize if enabled and file is too large
+                        if (autoOptimize && compressed.length > 30 * 1024) {
+                            let attempts = 0;
+                            let currentQuality = quality;
+                            let currentFrames = optimizedFrames;
+                            
+                            while (compressed.length > 30 * 1024 && attempts < 5) {
+                                attempts++;
+                                this.showStatus(`File too large (${(compressed.length / 1024).toFixed(1)}KB), optimizing... (attempt ${attempts})`, 'info');
+                                
+                                // Reduce quality and frame count
+                                currentQuality = Math.max(0.1, currentQuality - 0.1);
+                                currentFrames = currentFrames.slice(0, Math.max(1, Math.floor(currentFrames.length * 0.85)));
+                                
+                                const reducedLottie = this.createLottieAnimation(currentFrames, width, height, fps, maxDuration, currentQuality);
+                                
+                                // Compress with reduced precision
+                                jsonString = JSON.stringify(reducedLottie, (key, value) => {
+                                    if (typeof value === 'number') {
+                                        return Math.round(value * 100) / 100;
+                                    }
+                                    return value;
+                                });
+                                compressed = pako.gzip(jsonString);
+                            }
+                        }
+                        
+                        const finalSize = compressed.length / 1024;
+                        if (finalSize > 30) {
+                            this.showStatus(`Warning: File size is ${finalSize.toFixed(1)}KB (exceeds 30KB limit for Telegram)`, 'error');
+                        } else {
+                            this.showStatus(`Conversion successful! File size: ${finalSize.toFixed(1)}KB`, 'success');
+                        }
+                        
+                        resolve(compressed);
+                    } catch (error) {
+                        reject(error);
+                    }
+                });
+            }
+
+            async extractGifFrames(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = async (e) => {
+                        try {
+                            const arrayBuffer = e.target.result;
+                            const frames = await this.parseGifFrames(arrayBuffer);
+                            resolve(frames);
+                        } catch (error) {
+                            // Fallback to simple image loading
+                            this.extractSingleFrame(file).then(resolve).catch(reject);
+                        }
+                    };
+                    reader.onerror = () => reject(new Error('Failed to read GIF file'));
+                    reader.readAsArrayBuffer(f
