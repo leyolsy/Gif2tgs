@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram Animated Emoji Converter (.WebM VP9)</title>
+    <title>Telegram Video Sticker Converter (.WebM VP9)</title>
     <style>
         * {
             margin: 0;
@@ -13,7 +13,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #0088cc 0%, #00a0dc 100%);
+            background: linear-gradient(135deg, #0e2a47 0%, #1d4a7d 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -22,7 +22,7 @@
         }
 
         .container {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(10px);
             border-radius: 20px;
             padding: 40px;
@@ -33,14 +33,10 @@
 
         h1 {
             text-align: center;
-            color: #333;
+            color: #1d4a7d;
             margin-bottom: 30px;
             font-size: 2.5em;
             font-weight: 700;
-            background: linear-gradient(45deg, #0088cc, #00a0dc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
 
         .subtitle {
@@ -51,32 +47,32 @@
         }
 
         .upload-area {
-            border: 3px dashed #0088cc;
+            border: 3px dashed #1d4a7d;
             border-radius: 15px;
             padding: 60px 20px;
             text-align: center;
             margin-bottom: 30px;
             cursor: pointer;
             transition: all 0.3s ease;
-            background: rgba(0, 136, 204, 0.05);
+            background: rgba(29, 74, 125, 0.05);
         }
 
         .upload-area:hover {
-            border-color: #00a0dc;
-            background: rgba(0, 160, 220, 0.1);
+            border-color: #3b7fbf;
+            background: rgba(29, 74, 125, 0.1);
             transform: translateY(-2px);
         }
 
         .upload-area.dragover {
-            border-color: #00a0dc;
-            background: rgba(0, 160, 220, 0.15);
+            border-color: #3b7fbf;
+            background: rgba(29, 74, 125, 0.15);
             transform: scale(1.02);
         }
 
         .upload-icon {
             font-size: 4em;
             margin-bottom: 20px;
-            color: #0088cc;
+            color: #1d4a7d;
             height: 1em; /* For SVG sizing */
         }
 
@@ -91,7 +87,7 @@
         }
 
         .btn {
-            background: linear-gradient(45deg, #0088cc, #00a0dc);
+            background: linear-gradient(45deg, #1d4a7d, #3b7fbf);
             color: white;
             border: none;
             padding: 12px 30px;
@@ -106,7 +102,7 @@
 
         .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0, 136, 204, 0.3);
+            box-shadow: 0 10px 25px rgba(29, 74, 125, 0.3);
         }
 
         .btn:disabled {
@@ -115,43 +111,37 @@
             transform: none;
             box-shadow: none;
         }
-
-        .preview-area {
-            display: none;
-            margin: 30px 0;
-        }
-
-        .preview-container {
-            display: flex;
-            gap: 30px;
-            align-items: flex-start;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .preview-item {
-            text-align: center;
-            background: rgba(255, 255, 255, 0.8);
+        
+        .requirements {
+            background: rgba(29, 74, 125, 0.1);
             padding: 20px;
             border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            max-width: 280px;
+            margin: 20px 0;
+            border: 1px solid rgba(29, 74, 125, 0.3);
         }
 
-        .preview-item h3 {
+        .requirements h3 {
+            color: #1d4a7d;
             margin-bottom: 15px;
-            color: #333;
-            font-size: 1.1em;
-            word-wrap: break-word;
         }
 
-        .preview-item video {
-            width: 100%;
-            height: auto;
-            max-height: 200px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            background: #eee;
+        .requirements ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .requirements li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .requirements li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #1d4a7d;
+            font-weight: bold;
         }
 
         .options {
@@ -171,61 +161,38 @@
 
         .option-group {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
         }
-
+        
         .option-item label {
             display: block;
             margin-bottom: 5px;
             color: #666;
             font-weight: 500;
         }
-
-        .option-item input, .option-item select {
+        
+        .option-item input {
             width: 100%;
             padding: 8px 12px;
             border: 2px solid #ddd;
             border-radius: 8px;
             font-size: 1em;
         }
-
-        .option-item input:focus, .option-item select:focus {
-            outline: none;
-            border-color: #0088cc;
-        }
-
-        .requirements {
-            background: rgba(0, 136, 204, 0.1);
-            padding: 20px;
-            border-radius: 15px;
+        
+        .status {
+            text-align: center;
             margin: 20px 0;
-            border: 1px solid rgba(0, 136, 204, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: 500;
+            display: none;
         }
-
-        .requirements h3 {
-            color: #0088cc;
-            margin-bottom: 15px;
-        }
-
-        .requirements ul {
-            list-style: none;
-            padding-left: 0;
-        }
-
-        .requirements li {
-            margin-bottom: 8px;
-            padding-left: 20px;
-            position: relative;
-        }
-
-        .requirements li:before {
-            content: "✓";
-            position: absolute;
-            left: 0;
-            color: #0088cc;
-            font-weight: bold;
-        }
+        
+        .status.success { background: rgba(76, 175, 80, 0.1); color: #4caf50; border: 1px solid rgba(76, 175, 80, 0.3); }
+        .status.error { background: rgba(244, 67, 54, 0.1); color: #f44336; border: 1px solid rgba(244, 67, 54, 0.3); }
+        .status.info { background: rgba(33, 150, 243, 0.1); color: #2196f3; border: 1px solid rgba(33, 150, 243, 0.3); }
+        .status.warning { background: rgba(255, 152, 0, 0.1); color: #ff9800; border: 1px solid rgba(255, 152, 0, 0.3); }
 
         .progress-bar {
             display: none;
@@ -239,24 +206,10 @@
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(45deg, #0088cc, #00a0dc);
+            background: linear-gradient(45deg, #1d4a7d, #3b7fbf);
             transition: width 0.3s ease;
             width: 0%;
         }
-
-        .status {
-            text-align: center;
-            margin: 20px 0;
-            padding: 15px;
-            border-radius: 10px;
-            font-weight: 500;
-            display: none;
-        }
-
-        .status.success { background: rgba(76, 175, 80, 0.1); color: #4caf50; border: 1px solid rgba(76, 175, 80, 0.3); }
-        .status.error { background: rgba(244, 67, 54, 0.1); color: #f44336; border: 1px solid rgba(244, 67, 54, 0.3); }
-        .status.info { background: rgba(33, 150, 243, 0.1); color: #2196f3; border: 1px solid rgba(33, 150, 243, 0.3); }
-        .status.warning { background: rgba(255, 152, 0, 0.1); color: #ff9800; border: 1px solid rgba(255, 152, 0, 0.3); }
 
         .download-area {
             display: none;
@@ -268,57 +221,30 @@
             background: linear-gradient(45deg, #4caf50, #45a049);
             margin: 0 10px;
         }
-
-        .download-btn:hover {
-            box-shadow: 0 10px 25px rgba(76, 175, 80, 0.3);
-        }
-
-        .file-info {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 15px;
-            font-size: 0.9em;
-            text-align: left;
-        }
-
-        .file-info div {
-            background: rgba(255, 255, 255, 0.5);
-            padding: 10px;
-            border-radius: 8px;
-        }
-
-        @media (max-width: 768px) {
-            .container { padding: 20px; }
-            h1 { font-size: 2em; }
-            .upload-area { padding: 40px 15px; }
-            .preview-container { flex-direction: column; align-items: center;}
-            .option-group { grid-template-columns: 1fr; }
-            .file-info { grid-template-columns: 1fr; }
-        }
+        
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🙂 Telegram Animated Emoji Converter</h1>
-        <p class="subtitle">Convert videos to the exact format for custom animated emojis</p>
+        <h1>📹 Telegram Video Sticker Converter</h1>
+        <p class="subtitle">Convert videos to the exact format for custom video stickers</p>
         
         <div class="requirements">
-            <h3>📋 Animated Emoji Requirements</h3>
+            <h3>📋 Video Sticker Requirements</h3>
             <ul>
-                <li><strong>Resolution:</strong> Exactly 100x100 pixels</li>
-                <li><strong>Format:</strong> WebM container with VP9 codec</li>
-                <li><strong>No audio stream</strong> allowed</li>
-                <li><strong>Maximum size:</strong> 256 KB</li>
-                <li><strong>Frame rate:</strong> 30 FPS</li>
-                <li><strong>Maximum duration:</strong> 3 seconds</li>
-                <li><strong>Looping:</strong> The animation should be seamlessly looped</li>
+                <li><strong>Dimensions:</strong> Must fit in a 512x512 square.</li>
+                <li><strong>One side must be exactly 512px</strong> (the other 512px or less).</li>
+                <li><strong>Format:</strong> WebM container with VP9 codec.</li>
+                <li><strong>No audio stream</strong> allowed.</li>
+                <li><strong>Maximum size:</strong> 256 KB.</li>
+                <li><strong>Frame rate:</strong> 30 FPS.</li>
+                <li><strong>Maximum duration:</strong> 3 seconds.</li>
             </ul>
         </div>
 
         <div class="upload-area" id="uploadArea">
             <div class="upload-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.5 3h-15A2.5 2.5 0 002 5.5v13A2.5 2.5 0 004.5 21h15a2.5 2.5 0 002.5-2.5v-13A2.5 2.5 0 0019.5 3zM9 15.5H7.5V11a.5.5 0 00-1 0v4.5H5a.5.5 0 00-.5.5v1a.5.5 0 00.5.5h4a.5.5 0 00.5-.5v-1a.5.5 0 00-.5-.5zm4.5-3.5a1 1 0 01-1-1v-1a1 1 0 011-1h.5a.5.5 0 00.5-.5v-1a.5.5 0 00-.5-.5h-2a.5.5 0 00-.5.5v4a.5.5 0 00.5.5h2a.5.5 0 00.5-.5v-1a.5.5 0 00-.5-.5h-.5zm5.5 1.5h-2.5a.5.5 0 00-.5.5v1a.5.5 0 00.5.5H19a.5.5 0 00.5-.5v-1a.5.5 0 00-.5-.5zm0-3h-2.5a.5.5 0 00-.5.5v1a.5.5 0 00.5.5H19a.5.5 0 00.5-.5v-1a.5.5 0 00-.5-.5z"></path></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2ZM9.5 16.5v-9l7 4.5-7 4.5Z"/></svg>
             </div>
             <div class="upload-text">
                 <strong>Click here or drag & drop your video files</strong>
@@ -336,28 +262,8 @@
                 </div>
                 <div class="option-item">
                     <label for="bitrate">Initial Bitrate (kbps):</label>
-                    <input type="number" id="bitrate" value="400" min="50" max="2000" step="50">
+                    <input type="number" id="bitrate" value="500" min="50" max="2000" step="50">
                 </div>
-                <div class="option-item">
-                    <label for="preserveAspect">Preserve Aspect Ratio:</label>
-                    <select id="preserveAspect">
-                        <option value="true">Yes (add padding)</option>
-                        <option value="false">No (stretch to 100x100)</option>
-                    </select>
-                </div>
-                <div class="option-item">
-                    <label for="background">Padding Color:</label>
-                    <select id="background">
-                        <option value="transparent">Transparent</option>
-                        <option value="white">White</option>
-                        <option value="black">Black</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-        <div class="preview-area" id="previewArea">
-            <div class="preview-container" id="previewContainer">
             </div>
         </div>
 
@@ -368,21 +274,19 @@
         <div class="status" id="status"></div>
 
         <div style="text-align: center; margin-top: 30px;">
-            <button class="btn" id="convertBtn" disabled>🔄 Convert to Emoji</button>
+            <button class="btn" id="convertBtn" disabled>🔄 Convert to Sticker</button>
         </div>
 
         <div class="download-area" id="downloadArea">
             <h3>✅ Conversion Complete!</h3>
-            <div id="downloadLinks"></div>
         </div>
     </div>
 
     <script>
-        class WebMVP9Converter {
+        class WebMStickerConverter {
             constructor() {
                 this.files = [];
                 this.initializeEventListeners();
-                this.showStatus('Ready to convert videos!', 'info');
             }
 
             initializeEventListeners() {
@@ -391,26 +295,14 @@
                 const convertBtn = document.getElementById('convertBtn');
                 
                 uploadArea.addEventListener('click', () => fileInput.click());
-                uploadArea.addEventListener('dragover', this.handleDragOver.bind(this));
-                uploadArea.addEventListener('dragleave', this.handleDragLeave.bind(this));
+                uploadArea.addEventListener('dragover', (e) => e.preventDefault());
                 uploadArea.addEventListener('drop', this.handleDrop.bind(this));
                 fileInput.addEventListener('change', this.handleFileSelect.bind(this));
                 convertBtn.addEventListener('click', this.convertFiles.bind(this));
             }
 
-            handleDragOver(e) {
-                e.preventDefault();
-                document.getElementById('uploadArea').classList.add('dragover');
-            }
-
-            handleDragLeave(e) {
-                e.preventDefault();
-                document.getElementById('uploadArea').classList.remove('dragover');
-            }
-
             handleDrop(e) {
                 e.preventDefault();
-                document.getElementById('uploadArea').classList.remove('dragover');
                 this.processFiles(e.dataTransfer.files);
             }
 
@@ -428,67 +320,20 @@
                     return;
                 }
 
-                this.showPreviews();
                 document.getElementById('convertBtn').disabled = false;
                 this.showStatus(`${this.files.length} file(s) ready for conversion.`, 'info');
             }
-
-            showPreviews() {
-                const previewArea = document.getElementById('previewArea');
-                const previewContainer = document.getElementById('previewContainer');
-                previewContainer.innerHTML = '';
-                
-                this.files.forEach(file => {
-                    const previewItem = document.createElement('div');
-                    previewItem.className = 'preview-item';
-                    
-                    const title = document.createElement('h3');
-                    title.textContent = file.name;
-                    
-                    const video = document.createElement('video');
-                    const videoSrc = URL.createObjectURL(file);
-                    video.src = videoSrc;
-                    video.controls = true;
-                    video.muted = true;
-                    
-                    const fileInfo = document.createElement('div');
-                    fileInfo.className = 'file-info';
-                    
-                    video.addEventListener('loadedmetadata', () => {
-                        const duration = video.duration;
-                        const width = video.videoWidth;
-                        const height = video.videoHeight;
-                        const sizeKB = (file.size / 1024).toFixed(1);
-                        
-                        fileInfo.innerHTML = `
-                            <div><strong>Size:</strong> ${sizeKB} KB</div>
-                            <div><strong>Duration:</strong> ${duration.toFixed(1)}s</div>
-                            <div><strong>Resolution:</strong> ${width}x${height}</div>
-                            <div><strong>Type:</strong> ${file.type || 'N/A'}</div>
-                        `;
-                        URL.revokeObjectURL(videoSrc);
-                    });
-                    
-                    previewItem.appendChild(title);
-                    previewItem.appendChild(video);
-                    previewItem.appendChild(fileInfo);
-                    previewContainer.appendChild(previewItem);
-                });
-                
-                previewArea.style.display = 'block';
-            }
-
+            
             async convertFiles() {
                 const convertBtn = document.getElementById('convertBtn');
                 const progressBar = document.getElementById('progressBar');
                 const progressFill = document.getElementById('progressFill');
                 const downloadArea = document.getElementById('downloadArea');
-                const downloadLinks = document.getElementById('downloadLinks');
 
                 convertBtn.disabled = true;
                 progressBar.style.display = 'block';
                 downloadArea.style.display = 'none';
-                downloadLinks.innerHTML = '';
+                downloadArea.innerHTML = '<h3>✅ Conversion Complete!</h3>';
                 this.showStatus('Starting conversion...', 'info');
 
                 try {
@@ -521,10 +366,7 @@
             async convertToWebM(file) {
                 const maxDuration = parseFloat(document.getElementById('duration').value);
                 let bitrate = parseInt(document.getElementById('bitrate').value) * 1000;
-                const preserveAspect = document.getElementById('preserveAspect').value === 'true';
-                const background = document.getElementById('background').value;
-                
-                const TARGET_SIZE = 100; // Hardcoded for emojis
+
                 const FPS = 30;
                 const FRAME_INTERVAL = 1 / FPS;
                 
@@ -534,7 +376,7 @@
 
                 while (currentTry < maxTries) {
                     currentTry++;
-                    const blob = await this.renderWebM(file, maxDuration, bitrate, preserveAspect, background, TARGET_SIZE, FPS, FRAME_INTERVAL);
+                    const blob = await this.renderWebM(file, maxDuration, bitrate, FPS, FRAME_INTERVAL);
                     const finalSizeKB = blob.size / 1024;
 
                     if (finalSizeKB <= MAX_SIZE_KB) {
@@ -543,23 +385,35 @@
                     }
                     
                     this.showStatus(`File is ${finalSizeKB.toFixed(1)}KB, auto-optimizing (try ${currentTry})...`, 'info');
-                    bitrate = Math.max(50000, bitrate * 0.7); // Reduce bitrate by 30%, with a floor of 50kbps
+                    bitrate = Math.max(50000, bitrate * 0.75); // Reduce bitrate by 25%
                 }
 
-                throw new Error(`Could not optimize ${file.name} to under ${MAX_SIZE_KB}KB after ${maxTries} attempts.`);
+                throw new Error(`Could not optimize ${file.name} to under ${MAX_SIZE_KB}KB.`);
             }
 
-            renderWebM(file, maxDuration, bitrate, preserveAspect, background, targetSize, FPS, FRAME_INTERVAL) {
+            renderWebM(file, maxDuration, bitrate, FPS, FRAME_INTERVAL) {
                  return new Promise((resolve, reject) => {
                     const video = document.createElement('video');
                     video.src = URL.createObjectURL(file);
                     video.muted = true;
 
                     video.addEventListener('loadedmetadata', () => {
+                        // **This is the key logic for resizing to 512px sticker dimensions**
+                        const aspectRatio = video.videoWidth / video.videoHeight;
+                        let newWidth, newHeight;
+
+                        if (aspectRatio >= 1) { // Landscape or square video
+                            newWidth = 512;
+                            newHeight = Math.round(512 / aspectRatio);
+                        } else { // Portrait video
+                            newHeight = 512;
+                            newWidth = Math.round(512 * aspectRatio);
+                        }
+
                         const canvas = document.createElement('canvas');
+                        canvas.width = newWidth;
+                        canvas.height = newHeight;
                         const ctx = canvas.getContext('2d');
-                        canvas.width = targetSize;
-                        canvas.height = targetSize;
 
                         const stream = canvas.captureStream(FPS);
                         const recorder = new MediaRecorder(stream, {
@@ -584,26 +438,7 @@
                                 return;
                             }
                             
-                            // Calculate draw dimensions
-                            let drawWidth = targetSize, drawHeight = targetSize, drawX = 0, drawY = 0;
-                            if (preserveAspect) {
-                                const ratio = video.videoWidth / video.videoHeight;
-                                if (ratio > 1) { // Landscape
-                                    drawHeight = targetSize / ratio;
-                                    drawY = (targetSize - drawHeight) / 2;
-                                } else { // Portrait or square
-                                    drawWidth = targetSize * ratio;
-                                    drawX = (targetSize - drawWidth) / 2;
-                                }
-                            }
-
-                            ctx.clearRect(0, 0, targetSize, targetSize);
-                            if (background !== 'transparent') {
-                                ctx.fillStyle = background;
-                                ctx.fillRect(0, 0, targetSize, targetSize);
-                            }
-                            
-                            ctx.drawImage(video, drawX, drawY, drawWidth, drawHeight);
+                            ctx.drawImage(video, 0, 0, newWidth, newHeight);
                             video.currentTime += FRAME_INTERVAL;
                             currentFrame++;
                         };
@@ -616,17 +451,9 @@
             }
 
             createDownloadLink(originalName, webmData) {
-                const downloadLinks = document.getElementById('downloadLinks');
+                const downloadArea = document.getElementById('downloadArea');
                 
-                const linkContainer = document.createElement('div');
-                linkContainer.style.margin = '10px auto';
-                linkContainer.style.padding = '15px';
-                linkContainer.style.background = 'rgba(255, 255, 255, 0.8)';
-                linkContainer.style.borderRadius = '10px';
-                linkContainer.style.textAlign = 'center';
-                linkContainer.style.maxWidth = '400px';
-                
-                const fileName = originalName.replace(/\.[^/.]+$/, '_emoji.webm');
+                const fileName = originalName.replace(/\.[^/.]+$/, '_sticker.webm');
                 const downloadURL = URL.createObjectURL(webmData);
                 
                 const downloadBtn = document.createElement('a');
@@ -637,12 +464,15 @@
                 
                 const sizeInfo = document.createElement('p');
                 sizeInfo.textContent = `Size: ${(webmData.size / 1024).toFixed(1)} KB`;
-                sizeInfo.style.marginTop = '10px';
+                sizeInfo.style.marginTop = '5px';
                 sizeInfo.style.color = '#666';
                 
-                linkContainer.appendChild(downloadBtn);
-                linkContainer.appendChild(sizeInfo);
-                downloadLinks.appendChild(linkContainer);
+                const container = document.createElement('div');
+                container.style.marginTop = '15px';
+                container.appendChild(downloadBtn);
+                container.appendChild(sizeInfo);
+                
+                downloadArea.appendChild(container);
             }
 
             showStatus(message, type) {
@@ -654,7 +484,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            new WebMVP9Converter();
+            new WebMStickerConverter();
         });
     </script>
 </body>
