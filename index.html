@@ -1,9 +1,9 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebM VP9 Converter for Telegram Video Stickers</title>
+    <title>Telegram Animated Emoji Converter (.WebM VP9)</title>
     <style>
         * {
             margin: 0;
@@ -77,6 +77,7 @@
             font-size: 4em;
             margin-bottom: 20px;
             color: #0088cc;
+            height: 1em; /* For SVG sizing */
         }
 
         .upload-text {
@@ -112,6 +113,7 @@
             opacity: 0.6;
             cursor: not-allowed;
             transform: none;
+            box-shadow: none;
         }
 
         .preview-area {
@@ -122,7 +124,7 @@
         .preview-container {
             display: flex;
             gap: 30px;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
             flex-wrap: wrap;
         }
@@ -133,19 +135,23 @@
             padding: 20px;
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            max-width: 280px;
         }
 
         .preview-item h3 {
             margin-bottom: 15px;
             color: #333;
             font-size: 1.1em;
+            word-wrap: break-word;
         }
 
         .preview-item video {
-            max-width: 200px;
+            width: 100%;
+            height: auto;
             max-height: 200px;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            background: #eee;
         }
 
         .options {
@@ -164,15 +170,9 @@
         }
 
         .option-group {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
-
-        .option-item {
-            flex: 1;
-            min-width: 150px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
         }
 
         .option-item label {
@@ -250,31 +250,13 @@
             padding: 15px;
             border-radius: 10px;
             font-weight: 500;
+            display: none;
         }
 
-        .status.success {
-            background: rgba(76, 175, 80, 0.1);
-            color: #4caf50;
-            border: 1px solid rgba(76, 175, 80, 0.3);
-        }
-
-        .status.error {
-            background: rgba(244, 67, 54, 0.1);
-            color: #f44336;
-            border: 1px solid rgba(244, 67, 54, 0.3);
-        }
-
-        .status.info {
-            background: rgba(33, 150, 243, 0.1);
-            color: #2196f3;
-            border: 1px solid rgba(33, 150, 243, 0.3);
-        }
-
-        .status.warning {
-            background: rgba(255, 152, 0, 0.1);
-            color: #ff9800;
-            border: 1px solid rgba(255, 152, 0, 0.3);
-        }
+        .status.success { background: rgba(76, 175, 80, 0.1); color: #4caf50; border: 1px solid rgba(76, 175, 80, 0.3); }
+        .status.error { background: rgba(244, 67, 54, 0.1); color: #f44336; border: 1px solid rgba(244, 67, 54, 0.3); }
+        .status.info { background: rgba(33, 150, 243, 0.1); color: #2196f3; border: 1px solid rgba(33, 150, 243, 0.3); }
+        .status.warning { background: rgba(255, 152, 0, 0.1); color: #ff9800; border: 1px solid rgba(255, 152, 0, 0.3); }
 
         .download-area {
             display: none;
@@ -297,6 +279,7 @@
             gap: 15px;
             margin-top: 15px;
             font-size: 0.9em;
+            text-align: left;
         }
 
         .file-info div {
@@ -306,56 +289,41 @@
         }
 
         @media (max-width: 768px) {
-            .container {
-                padding: 20px;
-            }
-            
-            h1 {
-                font-size: 2em;
-            }
-            
-            .upload-area {
-                padding: 40px 15px;
-            }
-            
-            .preview-container {
-                flex-direction: column;
-            }
-            
-            .option-group {
-                flex-direction: column;
-            }
-
-            .file-info {
-                grid-template-columns: 1fr;
-            }
+            .container { padding: 20px; }
+            h1 { font-size: 2em; }
+            .upload-area { padding: 40px 15px; }
+            .preview-container { flex-direction: column; align-items: center;}
+            .option-group { grid-template-columns: 1fr; }
+            .file-info { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🎬 WebM VP9 Converter</h1>
-        <p class="subtitle">Convert videos to Telegram video stickers format</p>
+        <h1>🙂 Telegram Animated Emoji Converter</h1>
+        <p class="subtitle">Convert videos to the exact format for custom animated emojis</p>
         
         <div class="requirements">
-            <h3>📋 Telegram Video Sticker Requirements</h3>
+            <h3>📋 Animated Emoji Requirements</h3>
             <ul>
-                <li>Format: WebM container with VP9 codec</li>
-                <li>No audio stream allowed</li>
-                <li>Maximum size: 256 KB</li>
-                <li>Resolution: 512x512px (one side must be exactly 512px)</li>
-                <li>Frame rate: 30 FPS</li>
-                <li>Maximum duration: 3 seconds</li>
-                <li>Supports transparency (alpha channel)</li>
+                <li><strong>Resolution:</strong> Exactly 100x100 pixels</li>
+                <li><strong>Format:</strong> WebM container with VP9 codec</li>
+                <li><strong>No audio stream</strong> allowed</li>
+                <li><strong>Maximum size:</strong> 256 KB</li>
+                <li><strong>Frame rate:</strong> 30 FPS</li>
+                <li><strong>Maximum duration:</strong> 3 seconds</li>
+                <li><strong>Looping:</strong> The animation should be seamlessly looped</li>
             </ul>
         </div>
 
         <div class="upload-area" id="uploadArea">
-            <div class="upload-icon">🎥</div>
+            <div class="upload-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.5 3h-15A2.5 2.5 0 002 5.5v13A2.5 2.5 0 004.5 21h15a2.5 2.5 0 002.5-2.5v-13A2.5 2.5 0 0019.5 3zM9 15.5H7.5V11a.5.5 0 00-1 0v4.5H5a.5.5 0 00-.5.5v1a.5.5 0 00.5.5h4a.5.5 0 00.5-.5v-1a.5.5 0 00-.5-.5zm4.5-3.5a1 1 0 01-1-1v-1a1 1 0 011-1h.5a.5.5 0 00.5-.5v-1a.5.5 0 00-.5-.5h-2a.5.5 0 00-.5.5v4a.5.5 0 00.5.5h2a.5.5 0 00.5-.5v-1a.5.5 0 00-.5-.5h-.5zm5.5 1.5h-2.5a.5.5 0 00-.5.5v1a.5.5 0 00.5.5H19a.5.5 0 00.5-.5v-1a.5.5 0 00-.5-.5zm0-3h-2.5a.5.5 0 00-.5.5v1a.5.5 0 00.5.5H19a.5.5 0 00.5-.5v-1a.5.5 0 00-.5-.5z"></path></svg>
+            </div>
             <div class="upload-text">
                 <strong>Click here or drag & drop your video files</strong>
             </div>
-            <p style="color: #999; margin-top: 10px;">Supports MP4, MOV, AVI, GIF, and most video formats</p>
+            <p style="color: #999; margin-top: 10px;">Supports MP4, MOV, GIF, and most video formats</p>
             <input type="file" id="fileInput" class="file-input" accept="video/*,.gif" multiple>
         </div>
 
@@ -363,40 +331,26 @@
             <h3>⚙️ Conversion Settings</h3>
             <div class="option-group">
                 <div class="option-item">
-                    <label for="stickerType">Sticker Type:</label>
-                    <select id="stickerType">
-                        <option value="sticker">Video Sticker (512x512)</option>
-                        <option value="emoji">Custom Emoji (100x100)</option>
-                    </select>
-                </div>
-                <div class="option-item">
                     <label for="duration">Max Duration (seconds):</label>
                     <input type="number" id="duration" value="3" min="0.5" max="3" step="0.1">
                 </div>
                 <div class="option-item">
-                    <label for="quality">Quality (0-63, lower = better):</label>
-                    <input type="number" id="quality" value="32" min="0" max="63">
+                    <label for="bitrate">Initial Bitrate (kbps):</label>
+                    <input type="number" id="bitrate" value="400" min="50" max="2000" step="50">
                 </div>
                 <div class="option-item">
                     <label for="preserveAspect">Preserve Aspect Ratio:</label>
                     <select id="preserveAspect">
                         <option value="true">Yes (add padding)</option>
-                        <option value="false">No (stretch to fit)</option>
+                        <option value="false">No (stretch to 100x100)</option>
                     </select>
                 </div>
                 <div class="option-item">
-                    <label for="background">Background Color:</label>
+                    <label for="background">Padding Color:</label>
                     <select id="background">
                         <option value="transparent">Transparent</option>
                         <option value="white">White</option>
                         <option value="black">Black</option>
-                    </select>
-                </div>
-                <div class="option-item">
-                    <label for="autoOptimize">Auto-optimize for 256KB:</label>
-                    <select id="autoOptimize">
-                        <option value="true">Yes (Recommended)</option>
-                        <option value="false">No</option>
                     </select>
                 </div>
             </div>
@@ -414,7 +368,7 @@
         <div class="status" id="status"></div>
 
         <div style="text-align: center; margin-top: 30px;">
-            <button class="btn" id="convertBtn" disabled>🔄 Convert to WebM VP9</button>
+            <button class="btn" id="convertBtn" disabled>🔄 Convert to Emoji</button>
         </div>
 
         <div class="download-area" id="downloadArea">
@@ -423,58 +377,25 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ffmpeg.js/0.9.7/ffmpeg.min.js"></script>
     <script>
         class WebMVP9Converter {
             constructor() {
                 this.files = [];
-                this.ffmpeg = null;
                 this.initializeEventListeners();
-                this.initializeFFmpeg();
-            }
-
-            async initializeFFmpeg() {
-                try {
-                    this.showStatus('Initializing video processing engine...', 'info');
-                    
-                    // Use a simpler approach without FFmpeg for now
-                    this.showStatus('Ready to convert videos!', 'success');
-                } catch (error) {
-                    this.showStatus('Using basic conversion mode. Some features may be limited.', 'warning');
-                }
+                this.showStatus('Ready to convert videos!', 'info');
             }
 
             initializeEventListeners() {
                 const uploadArea = document.getElementById('uploadArea');
                 const fileInput = document.getElementById('fileInput');
                 const convertBtn = document.getElementById('convertBtn');
-                const stickerType = document.getElementById('stickerType');
-
-                // File upload events
+                
                 uploadArea.addEventListener('click', () => fileInput.click());
                 uploadArea.addEventListener('dragover', this.handleDragOver.bind(this));
                 uploadArea.addEventListener('dragleave', this.handleDragLeave.bind(this));
                 uploadArea.addEventListener('drop', this.handleDrop.bind(this));
                 fileInput.addEventListener('change', this.handleFileSelect.bind(this));
-
-                // Convert button
                 convertBtn.addEventListener('click', this.convertFiles.bind(this));
-
-                // Sticker type change
-                stickerType.addEventListener('change', this.updateStickerSettings.bind(this));
-            }
-
-            updateStickerSettings() {
-                const stickerType = document.getElementById('stickerType').value;
-                const duration = document.getElementById('duration');
-                
-                if (stickerType === 'emoji') {
-                    duration.value = '3';
-                    duration.max = '3';
-                } else {
-                    duration.value = '3';
-                    duration.max = '3';
-                }
             }
 
             handleDragOver(e) {
@@ -499,28 +420,25 @@
 
             processFiles(fileList) {
                 this.files = Array.from(fileList).filter(file => 
-                    file.type.startsWith('video/') || 
-                    file.type === 'image/gif' || 
-                    file.name.toLowerCase().endsWith('.gif')
+                    file.type.startsWith('video/') || file.type === 'image/gif'
                 );
 
                 if (this.files.length === 0) {
-                    this.showStatus('Please select valid video files (MP4, MOV, AVI, GIF, etc.)', 'error');
+                    this.showStatus('Please select valid video or GIF files.', 'error');
                     return;
                 }
 
                 this.showPreviews();
                 document.getElementById('convertBtn').disabled = false;
-                this.showStatus(`${this.files.length} video file(s) ready for conversion`, 'info');
+                this.showStatus(`${this.files.length} file(s) ready for conversion.`, 'info');
             }
 
             showPreviews() {
                 const previewArea = document.getElementById('previewArea');
                 const previewContainer = document.getElementById('previewContainer');
-                
                 previewContainer.innerHTML = '';
                 
-                this.files.forEach((file, index) => {
+                this.files.forEach(file => {
                     const previewItem = document.createElement('div');
                     previewItem.className = 'preview-item';
                     
@@ -528,16 +446,14 @@
                     title.textContent = file.name;
                     
                     const video = document.createElement('video');
-                    video.src = URL.createObjectURL(file);
+                    const videoSrc = URL.createObjectURL(file);
+                    video.src = videoSrc;
                     video.controls = true;
                     video.muted = true;
-                    video.style.maxWidth = '200px';
-                    video.style.maxHeight = '200px';
                     
                     const fileInfo = document.createElement('div');
                     fileInfo.className = 'file-info';
                     
-                    // Get video metadata
                     video.addEventListener('loadedmetadata', () => {
                         const duration = video.duration;
                         const width = video.videoWidth;
@@ -548,8 +464,9 @@
                             <div><strong>Size:</strong> ${sizeKB} KB</div>
                             <div><strong>Duration:</strong> ${duration.toFixed(1)}s</div>
                             <div><strong>Resolution:</strong> ${width}x${height}</div>
-                            <div><strong>Type:</strong> ${file.type || 'Unknown'}</div>
+                            <div><strong>Type:</strong> ${file.type || 'N/A'}</div>
                         `;
+                        URL.revokeObjectURL(videoSrc);
                     });
                     
                     previewItem.appendChild(title);
@@ -572,14 +489,15 @@
                 progressBar.style.display = 'block';
                 downloadArea.style.display = 'none';
                 downloadLinks.innerHTML = '';
+                this.showStatus('Starting conversion...', 'info');
 
                 try {
                     for (let i = 0; i < this.files.length; i++) {
                         const file = this.files[i];
                         const progress = ((i + 1) / this.files.length) * 100;
                         
-                        progressFill.style.width = progress + '%';
-                        this.showStatus(`Converting ${file.name}...`, 'info');
+                        this.showStatus(`(File ${i+1}/${this.files.length}) Converting ${file.name}...`, 'info');
+                        progressFill.style.width = `${progress}%`;
 
                         const webmData = await this.convertToWebM(file);
                         this.createDownloadLink(file.name, webmData);
@@ -589,176 +507,133 @@
                     downloadArea.style.display = 'block';
                     
                 } catch (error) {
-                    this.showStatus(`Conversion failed: ${error.message}`, 'error');
+                    this.showStatus(`Conversion failed: ${error.message || error}`, 'error');
                     console.error('Conversion error:', error);
                 } finally {
                     convertBtn.disabled = false;
                     setTimeout(() => {
                         progressBar.style.display = 'none';
                         progressFill.style.width = '0%';
-                    }, 1000);
+                    }, 1500);
                 }
             }
 
             async convertToWebM(file) {
-                return new Promise(async (resolve, reject) => {
-                    try {
-                        const stickerType = document.getElementById('stickerType').value;
-                        const maxDuration = parseFloat(document.getElementById('duration').value);
-                        const quality = parseInt(document.getElementById('quality').value);
-                        const preserveAspect = document.getElementById('preserveAspect').value === 'true';
-                        const background = document.getElementById('background').value;
-                        const autoOptimize = document.getElementById('autoOptimize').value === 'true';
+                const maxDuration = parseFloat(document.getElementById('duration').value);
+                let bitrate = parseInt(document.getElementById('bitrate').value) * 1000;
+                const preserveAspect = document.getElementById('preserveAspect').value === 'true';
+                const background = document.getElementById('background').value;
+                
+                const TARGET_SIZE = 100; // Hardcoded for emojis
+                const FPS = 30;
+                const FRAME_INTERVAL = 1 / FPS;
+                
+                let currentTry = 0;
+                const maxTries = 5;
+                const MAX_SIZE_KB = 256;
 
-                        // Determine target dimensions
-                        const targetSize = stickerType === 'emoji' ? 100 : 512;
-                        
-                        // Create video element to get source info
-                        const video = document.createElement('video');
-                        video.src = URL.createObjectURL(file);
-                        
-                        video.addEventListener('loadedmetadata', async () => {
-                            try {
-                                const canvas = document.createElement('canvas');
-                                const ctx = canvas.getContext('2d');
-                                
-                                // Set canvas dimensions
-                                canvas.width = targetSize;
-                                canvas.height = targetSize;
-                                
-                                // Calculate scaling and positioning
-                                let drawWidth = targetSize;
-                                let drawHeight = targetSize;
-                                let drawX = 0;
-                                let drawY = 0;
-                                
-                                if (preserveAspect) {
-                                    const aspectRatio = video.videoWidth / video.videoHeight;
-                                    if (aspectRatio > 1) {
-                                        drawHeight = targetSize / aspectRatio;
-                                        drawY = (targetSize - drawHeight) / 2;
-                                    } else {
-                                        drawWidth = targetSize * aspectRatio;
-                                        drawX = (targetSize - drawWidth) / 2;
-                                    }
-                                }
-                                
-                                // Set background
-                                if (background === 'white') {
-                                    ctx.fillStyle = 'white';
-                                    ctx.fillRect(0, 0, targetSize, targetSize);
-                                } else if (background === 'black') {
-                                    ctx.fillStyle = 'black';
-                                    ctx.fillRect(0, 0, targetSize, targetSize);
-                                }
-                                
-                                // Draw the video frame
-                                ctx.drawImage(video, drawX, drawY, drawWidth, drawHeight);
-                                
-                                // Convert to WebM using MediaRecorder
-                                const stream = canvas.captureStream(30);
-                                const recorder = new MediaRecorder(stream, {
-                                    mimeType: 'video/webm;codecs=vp9',
-                                    videoBitsPerSecond: 400000 // Start with 400kbps
-                                });
-                                
-                                const chunks = [];
-                                recorder.ondataavailable = (e) => {
-                                    if (e.data.size > 0) {
-                                        chunks.push(e.data);
-                                    }
-                                };
-                                
-                                recorder.onstop = async () => {
-                                    let blob = new Blob(chunks, { type: 'video/webm' });
-                                    
-                                    // Check size and optimize if needed
-                                    if (autoOptimize && blob.size > 256 * 1024) {
-                                        this.showStatus(`File too large (${(blob.size / 1024).toFixed(1)}KB), optimizing...`, 'info');
-                                        
-                                        // Try with lower bitrate
-                                        const optimizedRecorder = new MediaRecorder(stream, {
-                                            mimeType: 'video/webm;codecs=vp9',
-                                            videoBitsPerSecond: 200000 // Lower bitrate
-                                        });
-                                        
-                                        const optimizedChunks = [];
-                                        optimizedRecorder.ondataavailable = (e) => {
-                                            if (e.data.size > 0) {
-                                                optimizedChunks.push(e.data);
-                                            }
-                                        };
-                                        
-                                        optimizedRecorder.onstop = () => {
-                                            blob = new Blob(optimizedChunks, { type: 'video/webm' });
-                                            const finalSizeKB = blob.size / 1024;
-                                            
-                                            if (finalSizeKB > 256) {
-                                                this.showStatus(`Warning: File size is ${finalSizeKB.toFixed(1)}KB (exceeds 256KB limit)`, 'warning');
-                                            } else {
-                                                this.showStatus(`Optimized successfully! Final size: ${finalSizeKB.toFixed(1)}KB`, 'success');
-                                            }
-                                            
-                                            resolve(blob);
-                                        };
-                                        
-                                        optimizedRecorder.start();
-                                        setTimeout(() => {
-                                            optimizedRecorder.stop();
-                                            stream.getTracks().forEach(track => track.stop());
-                                        }, Math.min(maxDuration * 1000, 3000));
-                                    } else {
-                                        const finalSizeKB = blob.size / 1024;
-                                        this.showStatus(`Conversion successful! File size: ${finalSizeKB.toFixed(1)}KB`, 'success');
-                                        resolve(blob);
-                                        stream.getTracks().forEach(track => track.stop());
-                                    }
-                                };
-                                
-                                recorder.start();
-                                
-                                // Stop recording after specified duration
-                                setTimeout(() => {
-                                    recorder.stop();
-                                }, Math.min(maxDuration * 1000, 3000));
-                                
-                            } catch (error) {
-                                reject(error);
-                            }
-                        });
-                        
-                        video.addEventListener('error', () => {
-                            reject(new Error('Failed to load video file'));
-                        });
-                        
-                    } catch (error) {
-                        reject(error);
+                while (currentTry < maxTries) {
+                    currentTry++;
+                    const blob = await this.renderWebM(file, maxDuration, bitrate, preserveAspect, background, TARGET_SIZE, FPS, FRAME_INTERVAL);
+                    const finalSizeKB = blob.size / 1024;
+
+                    if (finalSizeKB <= MAX_SIZE_KB) {
+                        this.showStatus(`Success! Final size: ${finalSizeKB.toFixed(1)}KB.`, 'success');
+                        return blob;
                     }
-                });
+                    
+                    this.showStatus(`File is ${finalSizeKB.toFixed(1)}KB, auto-optimizing (try ${currentTry})...`, 'info');
+                    bitrate = Math.max(50000, bitrate * 0.7); // Reduce bitrate by 30%, with a floor of 50kbps
+                }
+
+                throw new Error(`Could not optimize ${file.name} to under ${MAX_SIZE_KB}KB after ${maxTries} attempts.`);
+            }
+
+            renderWebM(file, maxDuration, bitrate, preserveAspect, background, targetSize, FPS, FRAME_INTERVAL) {
+                 return new Promise((resolve, reject) => {
+                    const video = document.createElement('video');
+                    video.src = URL.createObjectURL(file);
+                    video.muted = true;
+
+                    video.addEventListener('loadedmetadata', () => {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        canvas.width = targetSize;
+                        canvas.height = targetSize;
+
+                        const stream = canvas.captureStream(FPS);
+                        const recorder = new MediaRecorder(stream, {
+                            mimeType: 'video/webm;codecs=vp9',
+                            videoBitsPerSecond: bitrate,
+                        });
+
+                        const chunks = [];
+                        recorder.ondataavailable = e => e.data.size > 0 && chunks.push(e.data);
+                        recorder.onstop = () => resolve(new Blob(chunks, { type: 'video/webm' }));
+                        recorder.onerror = e => reject(`MediaRecorder error: ${e.error.name}`);
+                        
+                        let currentFrame = 0;
+                        const totalFrames = Math.min(video.duration, maxDuration) * FPS;
+                        video.currentTime = 0;
+                        recorder.start();
+
+                        const renderFrame = () => {
+                            if (currentFrame >= totalFrames) {
+                                if (recorder.state === "recording") recorder.stop();
+                                URL.revokeObjectURL(video.src);
+                                return;
+                            }
+                            
+                            // Calculate draw dimensions
+                            let drawWidth = targetSize, drawHeight = targetSize, drawX = 0, drawY = 0;
+                            if (preserveAspect) {
+                                const ratio = video.videoWidth / video.videoHeight;
+                                if (ratio > 1) { // Landscape
+                                    drawHeight = targetSize / ratio;
+                                    drawY = (targetSize - drawHeight) / 2;
+                                } else { // Portrait or square
+                                    drawWidth = targetSize * ratio;
+                                    drawX = (targetSize - drawWidth) / 2;
+                                }
+                            }
+
+                            ctx.clearRect(0, 0, targetSize, targetSize);
+                            if (background !== 'transparent') {
+                                ctx.fillStyle = background;
+                                ctx.fillRect(0, 0, targetSize, targetSize);
+                            }
+                            
+                            ctx.drawImage(video, drawX, drawY, drawWidth, drawHeight);
+                            video.currentTime += FRAME_INTERVAL;
+                            currentFrame++;
+                        };
+                        
+                        video.addEventListener('seeked', renderFrame);
+                        renderFrame();
+                    });
+                    video.addEventListener('error', () => reject('Failed to load the video file.'));
+                 });
             }
 
             createDownloadLink(originalName, webmData) {
                 const downloadLinks = document.getElementById('downloadLinks');
                 
                 const linkContainer = document.createElement('div');
-                linkContainer.style.margin = '10px';
+                linkContainer.style.margin = '10px auto';
                 linkContainer.style.padding = '15px';
                 linkContainer.style.background = 'rgba(255, 255, 255, 0.8)';
                 linkContainer.style.borderRadius = '10px';
                 linkContainer.style.textAlign = 'center';
+                linkContainer.style.maxWidth = '400px';
                 
-                const fileName = originalName.replace(/\.[^/.]+$/, '') + '.webm';
+                const fileName = originalName.replace(/\.[^/.]+$/, '_emoji.webm');
                 const downloadURL = URL.createObjectURL(webmData);
                 
-                const downloadBtn = document.createElement('button');
+                const downloadBtn = document.createElement('a');
                 downloadBtn.className = 'btn download-btn';
                 downloadBtn.textContent = `📥 Download ${fileName}`;
-                downloadBtn.onclick = () => {
-                    const a = document.createElement('a');
-                    a.href = downloadURL;
-                    a.download = fileName;
-                    a.click();
-                };
+                downloadBtn.href = downloadURL;
+                downloadBtn.download = fileName;
                 
                 const sizeInfo = document.createElement('p');
                 sizeInfo.textContent = `Size: ${(webmData.size / 1024).toFixed(1)} KB`;
@@ -771,20 +646,13 @@
             }
 
             showStatus(message, type) {
-                const status = document.getElementById('status');
-                status.textContent = message;
-                status.className = `status ${type}`;
-                status.style.display = 'block';
-                
-                if (type === 'success') {
-                    setTimeout(() => {
-                        status.style.display = 'none';
-                    }, 3000);
-                }
+                const statusEl = document.getElementById('status');
+                statusEl.textContent = message;
+                statusEl.className = `status ${type}`;
+                statusEl.style.display = 'block';
             }
         }
 
-        // Initialize the converter when page loads
         document.addEventListener('DOMContentLoaded', () => {
             new WebMVP9Converter();
         });
