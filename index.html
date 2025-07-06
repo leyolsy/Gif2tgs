@@ -344,7 +344,7 @@
             <input type="file" id="fileInput" class="file-input" accept=".gif" multiple>
             <button class="select-button" id="selectButton">📱 Select GIF Files</button>
             <p style="color: #999; margin-top: 10px; text-align: center; font-size: 0.9em;">
-                Supports GIF files up to 10MB each
+                Supports GIF files up to 20MB each
             </p>
         </div>
 
@@ -451,11 +451,11 @@
 
             processFiles(fileList) {
                 this.files = Array.from(fileList).filter(file => 
-                    file.type === 'image/gif' && file.size <= 10 * 1024 * 1024
+                    file.type === 'image/gif' && file.size <= 20 * 1024 * 1024
                 );
 
                 if (this.files.length === 0) {
-                    this.showStatus('Please select valid GIF files (max 10MB each)', 'error');
+                    this.showStatus('Please select valid GIF files (max 20MB each)', 'error');
                     return;
                 }
 
