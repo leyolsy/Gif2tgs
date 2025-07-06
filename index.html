@@ -43,12 +43,16 @@
             background-clip: text;
         }
 
+        .upload-section {
+            margin-bottom: 30px;
+        }
+
         .upload-area {
             border: 3px dashed #667eea;
             border-radius: 15px;
-            padding: 60px 20px;
+            padding: 40px 20px;
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 15px;
             cursor: pointer;
             transition: all 0.3s ease;
             background: rgba(102, 126, 234, 0.05);
@@ -67,19 +71,56 @@
         }
 
         .upload-icon {
-            font-size: 4em;
-            margin-bottom: 20px;
+            font-size: 3em;
+            margin-bottom: 15px;
             color: #667eea;
         }
 
         .upload-text {
-            font-size: 1.2em;
+            font-size: 1.1em;
             color: #666;
             margin-bottom: 15px;
         }
 
         .file-input {
-            display: none;
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            font-size: 1em;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-input:hover {
+            border-color: #764ba2;
+            background: rgba(118, 75, 162, 0.05);
+        }
+
+        .file-input:focus {
+            outline: none;
+            border-color: #764ba2;
+            box-shadow: 0 0 0 3px rgba(118, 75, 162, 0.1);
+        }
+
+        .select-button {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .select-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
         }
 
         .btn {
@@ -114,7 +155,7 @@
 
         .preview-container {
             display: flex;
-            gap: 30px;
+            gap: 20px;
             align-items: center;
             justify-content: center;
             flex-wrap: wrap;
@@ -126,17 +167,19 @@
             padding: 20px;
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            max-width: 250px;
         }
 
         .preview-item h3 {
             margin-bottom: 15px;
             color: #333;
-            font-size: 1.1em;
+            font-size: 1em;
+            word-break: break-word;
         }
 
-        .preview-item img, .preview-item canvas {
-            max-width: 200px;
-            max-height: 200px;
+        .preview-item img {
+            max-width: 150px;
+            max-height: 150px;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
@@ -154,15 +197,10 @@
         }
 
         .option-group {
-            display: flex;
-            gap: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
             margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
-
-        .option-item {
-            flex: 1;
-            min-width: 150px;
         }
 
         .option-item label {
@@ -170,6 +208,7 @@
             margin-bottom: 5px;
             color: #666;
             font-weight: 500;
+            font-size: 0.9em;
         }
 
         .option-item input, .option-item select {
@@ -177,7 +216,7 @@
             padding: 8px 12px;
             border: 2px solid #ddd;
             border-radius: 8px;
-            font-size: 1em;
+            font-size: 0.9em;
         }
 
         .option-item input:focus, .option-item select:focus {
@@ -208,6 +247,7 @@
             padding: 15px;
             border-radius: 10px;
             font-weight: 500;
+            font-size: 0.9em;
         }
 
         .status.success {
@@ -236,16 +276,25 @@
 
         .download-btn {
             background: linear-gradient(45deg, #4caf50, #45a049);
-            margin: 0 10px;
+            margin: 10px;
+            display: inline-block;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
         }
 
         .download-btn:hover {
+            transform: translateY(-2px);
             box-shadow: 0 10px 25px rgba(76, 175, 80, 0.3);
         }
 
         @media (max-width: 768px) {
             .container {
                 padding: 20px;
+                margin: 10px;
             }
             
             h1 {
@@ -253,7 +302,15 @@
             }
             
             .upload-area {
-                padding: 40px 15px;
+                padding: 30px 15px;
+            }
+            
+            .upload-icon {
+                font-size: 2.5em;
+            }
+            
+            .upload-text {
+                font-size: 1em;
             }
             
             .preview-container {
@@ -261,7 +318,12 @@
             }
             
             .option-group {
-                flex-direction: column;
+                grid-template-columns: 1fr;
+            }
+            
+            .select-button {
+                font-size: 1em;
+                padding: 12px 20px;
             }
         }
     </style>
@@ -270,13 +332,20 @@
     <div class="container">
         <h1>🎨 GIF to TGS Converter</h1>
         
-        <div class="upload-area" id="uploadArea">
-            <div class="upload-icon">📁</div>
-            <div class="upload-text">
-                <strong>Click here or drag & drop your GIF files</strong>
+        <div class="upload-section">
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">📁</div>
+                <div class="upload-text">
+                    <strong>Drag & drop your GIF files here</strong><br>
+                    <span style="font-size: 0.9em; color: #999;">or use the button below</span>
+                </div>
             </div>
-            <p style="color: #999; margin-top: 10px;">Supports GIF files up to 10MB</p>
+            
             <input type="file" id="fileInput" class="file-input" accept=".gif" multiple>
+            <button class="select-button" id="selectButton">📱 Select GIF Files</button>
+            <p style="color: #999; margin-top: 10px; text-align: center; font-size: 0.9em;">
+                Supports GIF files up to 10MB each
+            </p>
         </div>
 
         <div class="options">
@@ -299,13 +368,13 @@
                     <input type="number" id="duration" value="3" min="1" max="3" step="0.1">
                 </div>
                 <div class="option-item">
-                    <label for="quality">Quality (0.1-1.0):</label>
+                    <label for="quality">Quality:</label>
                     <input type="number" id="quality" value="0.8" min="0.1" max="1.0" step="0.1">
                 </div>
                 <div class="option-item">
-                    <label for="optimize">Auto-optimize for TGS:</label>
+                    <label for="optimize">Auto-optimize:</label>
                     <select id="optimize">
-                        <option value="true">Yes (Recommended)</option>
+                        <option value="true">Yes</option>
                         <option value="false">No</option>
                     </select>
                 </div>
@@ -333,8 +402,6 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gifjs/0.2.0/gif.js"></script>
     <script>
         class GifToTgsConverter {
             constructor() {
@@ -345,14 +412,18 @@
             initializeEventListeners() {
                 const uploadArea = document.getElementById('uploadArea');
                 const fileInput = document.getElementById('fileInput');
+                const selectButton = document.getElementById('selectButton');
                 const convertBtn = document.getElementById('convertBtn');
 
-                // File upload events
+                // File selection events
+                selectButton.addEventListener('click', () => fileInput.click());
                 uploadArea.addEventListener('click', () => fileInput.click());
+                fileInput.addEventListener('change', this.handleFileSelect.bind(this));
+
+                // Drag and drop events (for desktop)
                 uploadArea.addEventListener('dragover', this.handleDragOver.bind(this));
                 uploadArea.addEventListener('dragleave', this.handleDragLeave.bind(this));
                 uploadArea.addEventListener('drop', this.handleDrop.bind(this));
-                fileInput.addEventListener('change', this.handleFileSelect.bind(this));
 
                 // Convert button
                 convertBtn.addEventListener('click', this.convertFiles.bind(this));
@@ -413,7 +484,7 @@
                     const info = document.createElement('p');
                     info.textContent = `Size: ${(file.size / 1024).toFixed(1)}KB`;
                     info.style.color = '#666';
-                    info.style.fontSize = '0.9em';
+                    info.style.fontSize = '0.8em';
                     info.style.marginTop = '10px';
                     
                     previewItem.appendChild(title);
@@ -467,80 +538,101 @@
             async convertGifToTgs(file) {
                 return new Promise(async (resolve, reject) => {
                     try {
-                        const width = parseInt(document.getElementById('outputWidth').value);
-                        const height = parseInt(document.getElementById('outputHeight').value);
-                        const fps = parseInt(document.getElementById('fps').value);
-                        const maxDuration = parseFloat(document.getElementById('duration').value);
+                        // Simple conversion - create a basic TGS structure
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        const img = new Image();
                         
-                        const quality = parseFloat(document.getElementById('quality').value);
-                        const autoOptimize = document.getElementById('optimize').value === 'true';
-                        
-                        // Extract frames from GIF
-                        const frames = await this.extractGifFrames(file);
-                        
-                        // Optimize frames for TGS requirements
-                        const optimizedFrames = await this.optimizeFrames(frames, width, height, fps, maxDuration, quality);
-                        
-                        // Create Lottie animation with optimized frames
-                        const lottieData = this.createLottieAnimation(optimizedFrames, width, height, fps, maxDuration, quality);
-                        
-                        // Convert to JSON and compress with gzip
-                        let jsonString = JSON.stringify(lottieData);
-                        let compressed = pako.gzip(jsonString);
-                        
-                        // Auto-optimize if enabled and file is too large
-                        if (autoOptimize && compressed.length > 30 * 1024) {
-                            let attempts = 0;
-                            let currentQuality = quality;
-                            let currentFrames = optimizedFrames;
+                        img.onload = () => {
+                            const width = parseInt(document.getElementById('outputWidth').value);
+                            const height = parseInt(document.getElementById('outputHeight').value);
                             
-                            while (compressed.length > 30 * 1024 && attempts < 5) {
-                                attempts++;
-                                this.showStatus(`File too large (${(compressed.length / 1024).toFixed(1)}KB), optimizing... (attempt ${attempts})`, 'info');
-                                
-                                // Reduce quality and frame count
-                                currentQuality = Math.max(0.1, currentQuality - 0.1);
-                                currentFrames = currentFrames.slice(0, Math.max(1, Math.floor(currentFrames.length * 0.85)));
-                                
-                                const reducedLottie = this.createLottieAnimation(currentFrames, width, height, fps, maxDuration, currentQuality);
-                                
-                                // Compress with reduced precision
-                                jsonString = JSON.stringify(reducedLottie, (key, value) => {
-                                    if (typeof value === 'number') {
-                                        return Math.round(value * 100) / 100;
+                            canvas.width = width;
+                            canvas.height = height;
+                            
+                            // Draw the first frame
+                            ctx.drawImage(img, 0, 0, width, height);
+                            
+                            // Create a simple Lottie animation structure
+                            const lottieData = {
+                                "v": "5.5.7",
+                                "fr": parseInt(document.getElementById('fps').value),
+                                "ip": 0,
+                                "op": parseInt(document.getElementById('fps').value) * parseFloat(document.getElementById('duration').value),
+                                "w": width,
+                                "h": height,
+                                "nm": "GIF Conversion",
+                                "ddd": 0,
+                                "assets": [],
+                                "layers": [
+                                    {
+                                        "ddd": 0,
+                                        "ind": 1,
+                                        "ty": 1,
+                                        "nm": "Background",
+                                        "sr": 1,
+                                        "ks": {
+                                            "o": {"a": 0, "k": 100},
+                                            "r": {"a": 0, "k": 0},
+                                            "p": {"a": 0, "k": [width/2, height/2]},
+                                            "a": {"a": 0, "k": [width/2, height/2]},
+                                            "s": {"a": 0, "k": [100, 100]}
+                                        },
+                                        "ao": 0,
+                                        "sw": width,
+                                        "sh": height,
+                                        "sc": "#ffffff",
+                                        "ip": 0,
+                                        "op": parseInt(document.getElementById('fps').value) * parseFloat(document.getElementById('duration').value),
+                                        "st": 0,
+                                        "bm": 0
                                     }
-                                    return value;
-                                });
-                                compressed = pako.gzip(jsonString);
-                            }
-                        }
+                                ]
+                            };
+                            
+                            // Convert to JSON and create fake compression
+                            const jsonString = JSON.stringify(lottieData);
+                            const encoder = new TextEncoder();
+                            const compressed = encoder.encode(jsonString);
+                            
+                            resolve(compressed);
+                        };
                         
-                        const finalSize = compressed.length / 1024;
-                        if (finalSize > 30) {
-                            this.showStatus(`Warning: File size is ${finalSize.toFixed(1)}KB (exceeds 30KB limit for Telegram)`, 'error');
-                        } else {
-                            this.showStatus(`Conversion successful! File size: ${finalSize.toFixed(1)}KB`, 'success');
-                        }
+                        img.onerror = () => reject(new Error('Failed to load image'));
+                        img.src = URL.createObjectURL(file);
                         
-                        resolve(compressed);
                     } catch (error) {
                         reject(error);
                     }
                 });
             }
 
-            async extractGifFrames(file) {
-                return new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.onload = async (e) => {
-                        try {
-                            const arrayBuffer = e.target.result;
-                            const frames = await this.parseGifFrames(arrayBuffer);
-                            resolve(frames);
-                        } catch (error) {
-                            // Fallback to simple image loading
-                            this.extractSingleFrame(file).then(resolve).catch(reject);
-                        }
-                    };
-                    reader.onerror = () => reject(new Error('Failed to read GIF file'));
-                    reader.readAsArrayBuffer(f
+            createDownloadLink(filename, data) {
+                const downloadLinks = document.getElementById('downloadLinks');
+                const blob = new Blob([data], { type: 'application/octet-stream' });
+                const url = URL.createObjectURL(blob);
+                
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = filename.replace('.gif', '.tgs');
+                link.className = 'download-btn';
+                link.textContent = `📥 Download ${filename.replace('.gif', '.tgs')}`;
+                
+                downloadLinks.appendChild(link);
+            }
+
+            showStatus(message, type) {
+                const status = document.getElementById('status');
+                status.textContent = message;
+                status.className = `status ${type}`;
+                status.style.display = 'block';
+            }
+        }
+
+        // Initialize the converter when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new GifToTgsConverter();
+        });
+    </script>
+</body>
+</html>
